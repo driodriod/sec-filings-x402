@@ -1,0 +1,32 @@
+{
+  "name": "sec-filings-x402",
+  "version": "1.0.0",
+  "description": "Polls SEC EDGAR for high-impact 8-Ks and sells company identity behind an x402 paywall (USDC on Base Sepolia).",
+  "type": "module",
+  "main": "index.js",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "start": "node --env-file-if-exists=.env index.js",
+    "dev": "node --watch --env-file-if-exists=.env index.js",
+    "start:news": "node --env-file-if-exists=.env news-server.js",
+    "start:sec": "node --env-file-if-exists=.env index.js",
+    "buy": "node --env-file-if-exists=.env buyer.js",
+    "buy:mainnet": "node --env-file-if-exists=.env buyer-mainnet.js"
+  },
+  "dependencies": {
+    "@x402/core": "~2.28.0",
+    "@x402/evm": "~2.28.0",
+    "@x402/express": "~2.28.0",
+    "@x402/extensions": "~2.28.0",
+    "@x402/fetch": "~2.28.0",
+    "axios": "^1.20.0",
+    "express": "^5.1.0",
+    "viem": "^2.57.7",
+    "xml2js": "^0.6.2"
+  },
+  "optionalDependencies": {
+    "@coinbase/x402": "^2.1.0"
+  }
+}

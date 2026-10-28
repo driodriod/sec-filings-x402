@@ -1,0 +1,8 @@
+# Never upload secrets or local-only files to Railway.
+# Settings go in Railway's "Variables" tab instead of .env.
+.env
+.env.*
+!.env.example
+node_modules/
+.vercel
+.DS_Store

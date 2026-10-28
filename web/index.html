@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>High-impact 8-Ks · x402</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Newsreader:opsz,wght@6..72,500;6..72,650&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body>
+    <div class="frame">
+      <header>
+        <p class="kicker">SEC EDGAR · <span id="kicker-network">Base</span> · x402</p>
+        <h1>High-impact 8-Ks, paywalled per filing</h1>
+        <p class="lede">
+          The feed is free: event type and severity. Company name, CIK, and the EDGAR link cost
+          <strong id="lede-price">USDC</strong> per filing<span id="lede-network"></span>. Routine 8-Ks never make this list.
+        </p>
+      </header>
+
+      <section class="stats" id="stats">
+        <div><span class="label">Status</span><span id="stat-status">loading</span></div>
+        <div><span class="label">Stored</span><span id="stat-count">—</span></div>
+        <div><span class="label">Last poll</span><span id="stat-poll">—</span></div>
+        <div><span class="label">Pay to</span><span id="stat-payto" class="mono">—</span></div>
+      </section>
+
+      <section>
+        <div class="section-head">
+          <h2>Current packets</h2>
+          <button type="button" id="refresh">Refresh</button>
+        </div>
+        <p class="hint" id="hint"></p>
+        <ul id="list" class="list"></ul>
+      </section>
+
+      <section class="panel hidden" id="unlock-panel">
+        <h2>Unlock response</h2>
+        <p class="hint" id="unlock-meta"></p>
+        <pre id="unlock-body"></pre>
+      </section>
+
+      <footer>
+        <p>
+          Watched items: 1.03 bankruptcy · 1.05 cyber · 4.02 restatement · 2.04 debt acceleration · 2.06
+          impairment · 3.01 delisting · 4.01 auditor change · 5.02 executive change.
+        </p>
+        <p>Unlock from a wallet with <code>npm run buy</code> locally, or hit the paid JSON route with an x402 client.</p>
+      </footer>
+    </div>
+    <script src="/app.js"></script>
+  </body>
+</html>
