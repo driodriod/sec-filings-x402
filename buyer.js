@@ -8,7 +8,7 @@
 // Never put real money in this wallet: its key sits in a plain text file.
 
 import { appendFileSync } from "node:fs";
-import { createPublicClient, formatUnits, http, parseAbi } from "viem";
+import { createPublicClient, formatUnits, http, parseAbi, parseUnits } from "viem";
 import { baseSepolia } from "viem/chains";
 import { generatePrivateKey, privateKeyToAccount } from "viem/accounts";
 import { decodePaymentResponseHeader, wrapFetchWithPaymentFromConfig } from "@x402/fetch";
@@ -19,7 +19,6 @@ const { BUYER_PRIVATE_KEY, PAY_TO_ADDRESS, PORT = "4022" } = process.env;
 const SERVER = (process.env.SERVER_URL ?? `http://localhost:${PORT}`).replace(/\/$/, "");
 const NETWORK = "eip155:84532"; // Base Sepolia
 const USDC = "0x036CbD53842c5426634e7929541eC2318f3dCF7e"; // USDC on Base Sepolia
-const PRICE_UNITS = 250_000n; // 0.25 USDC (6 decimals)
 
 // --- 1. Wallet -------------------------------------------------------------
 
@@ -45,11 +44,6 @@ const fmt = (units) => `${formatUnits(units, 6)} USDC`;
 
 const buyerBefore = await usdcBalance(account.address);
 console.log(`Buyer wallet : ${account.address}  balance ${fmt(buyerBefore)}`);
-if (buyerBefore < PRICE_UNITS) {
-  console.log(`\nNot enough test USDC (need 0.25). Get some free at https://faucet.circle.com
-(choose USDC + Base Sepolia, paste the buyer address above), then run again.`);
-  process.exit(1);
-}
 const sellerBefore = PAY_TO_ADDRESS ? await usdcBalance(PAY_TO_ADDRESS) : null;
 if (PAY_TO_ADDRESS) console.log(`Seller wallet: ${PAY_TO_ADDRESS}  balance ${fmt(sellerBefore)}`);
 
@@ -59,6 +53,14 @@ if (PAY_TO_ADDRESS) console.log(`Seller wallet: ${PAY_TO_ADDRESS}  balance ${fmt
 const health = await fetch(`${SERVER}/health`).then((r) => r.json()).catch(() => null);
 if (health && health.network !== NETWORK) {
   console.error(`\nThe server is on ${health.network} (${health.networkLabel ?? "not testnet"}). This test buyer only pays on Base Sepolia.`);
+  process.exit(1);
+}
+
+// The server's /health says what one filing costs, e.g. "$0.02".
+const price = (health?.price ?? "$0.02").replace("$", "");
+if (buyerBefore < parseUnits(price, 6)) {
+  console.log(`\nNot enough test USDC (need ${price}). Get some free at https://faucet.circle.com
+(choose USDC + Base Sepolia, paste the buyer address above), then run again.`);
   process.exit(1);
 }
 
@@ -91,7 +93,7 @@ const MAX_ATTEMPTS = 3;
 let res;
 let body;
 for (let attempt = 1; attempt <= MAX_ATTEMPTS; attempt++) {
-  console.log(`Requesting… (gets a 402, signs a 0.25 USDC payment, retries with it)${attempt > 1 ? ` [attempt ${attempt}]` : ""}`);
+  console.log(`Requesting… (gets a 402, signs a ${price} USDC payment, retries with it)${attempt > 1 ? ` [attempt ${attempt}]` : ""}`);
   res = await payingFetch(`${SERVER}/filings/${target}`);
   body = await res.json().catch(() => null);
   if (res.ok) break;

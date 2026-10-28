@@ -1,4 +1,4 @@
-// REAL-MONEY buyer for the live server: pays $0.25 USDC on Base mainnet.
+// REAL-MONEY buyer for the live server: pays the server's price (e.g. $0.02) in USDC on Base mainnet.
 // Meant for a handful of purchases you make yourself (e.g. the first sale that
 // gets the endpoint listed in the x402 Bazaar).
 //
@@ -8,7 +8,7 @@
 //
 // Safety limits (the script refuses to pay otherwise):
 //   - network must be Base mainnet and the asset must be official USDC
-//   - amount must be at most MAX_PRICE_USDC (0.25)
+//   - amount must be at most MAX_PRICE_USDC (0.25), a safety cap above the real price
 //   - payee must equal PAY_TO_ADDRESS from .env (your own wallet)
 //
 // First run creates a separate wallet (key saved to .env as
